@@ -1,1 +1,1 @@
-# basic_neural_net
+# basic-neural-net
