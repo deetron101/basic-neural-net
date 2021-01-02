@@ -1,4 +1,20 @@
 import numpy as np
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+origins = [
+    "http://localhost:3000"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 feature_set = np.array([[0,1,0],[0,0,1],[1,0,0],[1,1,0],[1,1,1]])
 labels = np.array([[1,0,0,1,1]])
@@ -15,33 +31,46 @@ def sigmoid(x):
 def sigmoid_der(x):
     return sigmoid(x)*(1-sigmoid(x))
 
-for epoch in range(20000):
-    inputs = feature_set
+def train():
 
-    # feedforward step1
-    XW = np.dot(feature_set, weights) + bias
+    global weights, bias
 
-    #feedforward step2
-    z = sigmoid(XW)
+    for epoch in range(20000):
+        inputs = feature_set
 
+        # feedforward step1
+        XW = np.dot(feature_set, weights) + bias
 
-    # backpropagation step 1
-    error = z - labels
+        #feedforward step2
+        z = sigmoid(XW)
 
-    print(error.sum())
+        # backpropagation step 1
+        error = z - labels
 
-    # backpropagation step 2
-    dcost_dpred = error
-    dpred_dz = sigmoid_der(z)
+        print(error.sum())
 
-    z_delta = dcost_dpred * dpred_dz
+        # backpropagation step 2
+        dcost_dpred = error
+        dpred_dz = sigmoid_der(z)
 
-    inputs = feature_set.T
-    weights -= lr * np.dot(inputs, z_delta)
+        z_delta = dcost_dpred * dpred_dz
 
-    for num in z_delta:
-        bias -= lr * num
+        inputs = feature_set.T
+        weights -= lr * np.dot(inputs, z_delta)
 
-single_point = np.array([1,1,1])
-result = sigmoid(np.dot(single_point, weights) + bias)
-print(result)
+        for num in z_delta:
+            bias -= lr * num
+
+def test():
+    single_point = np.array([1,1,1])
+    result = sigmoid(np.dot(single_point, weights) + bias)
+    print(result)
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+@app.get("/train")
+def do_train():
+    train()
+    return {"Success"}
