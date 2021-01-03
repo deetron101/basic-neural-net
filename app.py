@@ -1,4 +1,5 @@
 import numpy as np
+import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -25,6 +26,8 @@ weights = np.random.rand(3,1)
 bias = np.random.rand(1)
 lr = 0.05
 
+all_weights = [weights.flatten()]
+
 def sigmoid(x):
     return 1/(1+np.exp(-x))
 
@@ -33,9 +36,9 @@ def sigmoid_der(x):
 
 def train():
 
-    global weights, bias
+    global weights, bias, all_weights
 
-    for epoch in range(20000):
+    for epoch in range(20):
         inputs = feature_set
 
         # feedforward step1
@@ -46,8 +49,6 @@ def train():
 
         # backpropagation step 1
         error = z - labels
-
-        print(error.sum())
 
         # backpropagation step 2
         dcost_dpred = error
@@ -60,6 +61,8 @@ def train():
 
         for num in z_delta:
             bias -= lr * num
+        
+        all_weights = np.insert(all_weights, 0, [weights.flatten()], axis=0)
 
 def test():
     single_point = np.array([1,1,1])
@@ -73,4 +76,6 @@ def read_root():
 @app.get("/train")
 def do_train():
     train()
-    return {"Success"}
+    lists = all_weights.tolist()
+    json_str = json.dumps(lists)
+    return json_str

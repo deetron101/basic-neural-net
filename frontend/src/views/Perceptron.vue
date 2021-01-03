@@ -12,14 +12,36 @@
       Test
     </button>
   </div>
+  <div class="mt-5">
+    <div v-for="weights_set in weights">
+      <p class="inline" v-for="weight in weights_set">
+        {{ weight }}
+      </p>
+    </div>
+  </div>
 </template>
 
 <script>
+import Visualization from '../components/Visualization.vue'
 export default {
+  components: { Visualization },
+  data() {
+    return {
+      weights: []
+    }
+  },
   methods: {
     train() {
       fetch(import.meta.env.VITE_APP_API+"train")
-      .then(response => response.json())
+      .then(response => {
+      // a non-200 response code
+      if (!response.ok) {
+      }
+      return response.json();
+      })
+      .then(json => {
+        this.weights = JSON.parse(json);
+      })
     }
   }
 }
