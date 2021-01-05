@@ -1,4 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
+import Home from "../views/Home.vue";
 import Perceptron from "../views/Perceptron.vue";
 import TwoLayer from "../views/TwoLayer.vue";
 
@@ -6,8 +7,8 @@ const history = createWebHistory();
 const routes = [
   { 
     path: "/", 
-    component: Perceptron, 
-    name: ''
+    component: Home,
+    name: 'Home'
   },
   { 
     path: "/perceptron", 
