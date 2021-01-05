@@ -21,13 +21,6 @@ feature_set = np.array([[0,1,0],[0,0,1],[1,0,0],[1,1,0],[1,1,1]])
 labels = np.array([[1,0,0,1,1]])
 labels = labels.reshape(5,1)
 
-np.random.seed(42)
-weights = np.random.rand(3,1)
-bias = np.random.rand(1)
-lr = 0.05
-
-all_weights = [weights.flatten()]
-
 def sigmoid(x):
     return 1/(1+np.exp(-x))
 
@@ -36,9 +29,15 @@ def sigmoid_der(x):
 
 def train():
 
-    global weights, bias, all_weights
+    np.random.seed(42)
+    global weights, bias, all_weights 
+    weights = np.random.rand(3,1)
+    bias = np.random.rand(1)
+    lr = 0.05
 
-    for epoch in range(20):
+    all_weights = [weights.flatten()]
+
+    for epoch in range(2000):
         inputs = feature_set
 
         # feedforward step1

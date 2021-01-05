@@ -22,9 +22,7 @@
 </template>
 
 <script>
-import Visualization from '../components/Visualization.vue'
 export default {
-  components: { Visualization },
   data() {
     return {
       weights: []
