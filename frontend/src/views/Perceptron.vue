@@ -13,10 +13,10 @@
     </button>
   </div>
   <div class="mt-5">
-    <div v-for="weights_set in weights">
-      <p class="inline" v-for="weight in weights_set">
+    <div v-for="weights_set in weights" class="w-max">
+      <span v-for="weight in weights_set" class="inline-block mr-2 mt-4 h-12 w-12 rounded-3xl border-solid border-2 border-gray-300 text-xs text-center leading-10" :style="colorString(weight)">
         {{ weight }}
-      </p>
+      </span>
     </div>
   </div>
 </template>
@@ -40,6 +40,9 @@ export default {
       .then(json => {
         this.weights = JSON.parse(json);
       })
+    },
+    colorString(weight) {
+      return 'background-color:rgba(21,235,21,'+weight+')'
     }
   }
 }

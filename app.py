@@ -37,7 +37,7 @@ def train():
 
     all_weights = [weights.flatten()]
 
-    for epoch in range(2000):
+    for epoch in range(500):
         inputs = feature_set
 
         # feedforward step1
@@ -63,6 +63,12 @@ def train():
         
         all_weights = np.insert(all_weights, 0, [weights.flatten()], axis=0)
 
+def scale(X, x_min, x_max):
+    nom = (X-X.min(axis=0))*(x_max-x_min)
+    denom = X.max(axis=0) - X.min(axis=0)
+    denom[denom==0] = 1
+    return x_min + nom/denom 
+
 def test():
     single_point = np.array([1,1,1])
     result = sigmoid(np.dot(single_point, weights) + bias)
@@ -74,7 +80,11 @@ def read_root():
 
 @app.get("/train")
 def do_train():
+    global all_weights
     train()
+    all_weights = scale(all_weights, 0, 1)
+    all_weights = np.round(all_weights, 2)
+    all_weights = np.transpose(all_weights)
     lists = all_weights.tolist()
     json_str = json.dumps(lists)
     return json_str
