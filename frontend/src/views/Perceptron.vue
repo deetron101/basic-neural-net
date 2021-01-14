@@ -12,11 +12,20 @@
       Test
     </button>
   </div>
-  <div class="mt-5">
-    <div v-for="weights_set in weights" class="w-max">
-      <span v-for="weight in weights_set" class="inline-block mr-2 mt-4 h-12 w-12 rounded-3xl border-solid border-2 border-gray-300 text-xs text-center leading-10" :style="colorString(weight)">
-        {{ weight }}
-      </span>
+  <div class="mt-12 w-full lg:w-1/2">
+    <div class="flex justify-center mb-12">
+        <span class="h-20 w-20 ml-3 border border-gray-500 rounded-full text-xs text-center leading-10" :style="{backgroundColor:'rgba(0,0,255,'+current_weights[0]+')'}"></span>
+        <span class="w-6 text-gray-400 text-sm">{{current_weights[0]}}</span>
+    </div>
+    <div class="flex justify-center mb-12">
+      <span class="mr-20 h-16 w-16 border border-gray-500 rounded-full bg-gray-100 text-xs text-center leading-10"></span>
+      <span class="h-20 w-20 ml-3 border border-gray-500 rounded-full text-xs text-center leading-10" :style="{backgroundColor:'rgba(0,0,255,'+current_weights[1]+')'}"></span>
+      <span class="w-6 text-gray-400 text-sm">{{current_weights[1]}}</span>
+      <span class="ml-20 h-16 w-16 border border-gray-500 rounded-full bg-gray-100 text-xs text-center leading-10"></span>
+    </div>
+    <div class="flex justify-center">
+      <span class="h-20 w-20 ml-3 border border-gray-500 rounded-full text-xs text-center leading-10" :style="{backgroundColor:'rgba(0,0,255,'+current_weights[2]+')'}"></span>
+      <span class="w-6 text-gray-400 text-sm">{{current_weights[2]}}</span>
     </div>
   </div>
 </template>
@@ -25,24 +34,33 @@
 export default {
   data() {
     return {
-      weights: []
+      current_weights: [0,0,0],
+      epochs: 0
     }
   },
   methods: {
     train() {
       fetch(import.meta.env.VITE_APP_API+"train")
       .then(response => {
-      // a non-200 response code
-      if (!response.ok) {
-      }
-      return response.json();
+        // a non-200 response code
+        if (!response.ok) {
+        }
+        return response.json();
       })
       .then(json => {
         this.weights = JSON.parse(json);
+        this.epochs = this.weights.length;
+        this.index = 0;
+        this.interval = setInterval(this.nextWeight, 20);
       })
     },
-    colorString(weight) {
-      return 'background-color:rgba(21,235,21,'+weight+')'
+    nextWeight() {
+      if (this.index < this.epochs) {
+        this.current_weights = this.weights[this.index++];
+      }
+      else{
+        clearInterval(this.interval)
+      }
     }
   }
 }

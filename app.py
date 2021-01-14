@@ -61,7 +61,8 @@ def train():
         for num in z_delta:
             bias -= lr * num
         
-        all_weights = np.insert(all_weights, 0, [weights.flatten()], axis=0)
+        #all_weights = np.insert(all_weights, 0, [weights.flatten()], axis=0)
+        all_weights = np.append(all_weights, [weights.flatten()], axis=0)
 
 def scale(X, x_min, x_max):
     nom = (X-X.min(axis=0))*(x_max-x_min)
@@ -84,7 +85,7 @@ def do_train():
     train()
     all_weights = scale(all_weights, 0, 1)
     all_weights = np.round(all_weights, 2)
-    all_weights = np.transpose(all_weights)
+    #all_weights = np.transpose(all_weights)
     lists = all_weights.tolist()
     json_str = json.dumps(lists)
     return json_str
